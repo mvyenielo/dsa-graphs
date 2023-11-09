@@ -53,13 +53,88 @@ class Graph {
    }
 
   /** traverse graph with DFS and returns array of Node values */
-  depthFirstSearch(start) { }
+
+  depthFirstSearch(start) {
+    let toVisitStack = [start];
+    let seen = new Set([start]);
+
+    let values = [];
+    while (toVisitStack.length > 0){
+      //pop
+      const current = toVisitStack.pop();
+
+      values.push(current.value);
+
+      for (let neighbor of current.adjacent){
+        if (!seen.has(neighbor)){
+          //Add to both
+          toVisitStack.push(neighbor);
+          seen.add(neighbor);
+        }
+      }
+    }
+    return values;
+  }
 
   /** traverse graph with BDS and returns array of Node values */
-  breadthFirstSearch(start) { }
+  breadthFirstSearch(start) {
+    let toVisitQueue = [start];
+    let seen = new Set([start]);
+
+    let values = [];
+    while (toVisitQueue.length > 0){
+      //pop
+      const current = toVisitQueue.shift(); //interview note, I know this is inefficient
+
+      values.push(current.value);
+
+      for (let neighbor of current.adjacent){
+        if (!seen.has(neighbor)){
+          toVisitQueue.push(neighbor);
+          seen.add(neighbor);
+        }
+      }
+    }
+
+    return values;
+  }
 
   /** find the distance of the shortest path from the start node to the end node */
-  distanceOfShortestPath(start, end) { }
+  //       A
+  //   B  ->   D
+
+  distanceOfShortestPath(start, end) {
+
+    let pathDistances = [];
+
+    function DFS(p1, p2, seen=new Set([p1]), distance = 0) {
+      if (p1 === p2) {
+        pathDistances.push(distance);
+        return true;
+      }
+
+      if (p1.adjacent.has(p2)){
+        pathDistances.push(distance + 1);
+        return true;
+      }
+
+      for (let neighbor of p1.adjacent) {
+        if (!seen.has(neighbor)) {
+
+          seen.add(neighbor);
+          if (DFS(neighbor, p2, seen, distance = distance + 1)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    DFS(start, end);
+
+    console.log("path distances are: ", pathDistances);
+    return Math.min(...pathDistances);
+  }
 }
 
 module.exports = { Graph, Node }

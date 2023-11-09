@@ -106,31 +106,20 @@ class Graph {
   distanceOfShortestPath(start, end) {
 
     let pathDistances = [];
+    let toVisitQueue = [start];
+    let seen = new Set([start]);
 
-    function DFS(p1, p2, seen=new Set([p1]), distance = 0) {
-      if (p1 === p2) {
-        pathDistances.push(distance);
-        return true;
-      }
+    while(toVisitQueue.length > 0) {
+      const current = toVisitQueue.shift();
 
-      if (p1.adjacent.has(p2)){
-        pathDistances.push(distance + 1);
-        return true;
-      }
-
-      for (let neighbor of p1.adjacent) {
-        if (!seen.has(neighbor)) {
-
+      for (let neighbor of current.adjacent) {
+        if(!seen.has(neighbor)) {
+          toVisitQueue.push(neighbor);
           seen.add(neighbor);
-          if (DFS(neighbor, p2, seen, distance = distance + 1)) {
-            return true;
-          }
         }
       }
-      return false;
     }
 
-    DFS(start, end);
 
     console.log("path distances are: ", pathDistances);
     return Math.min(...pathDistances);
@@ -138,3 +127,28 @@ class Graph {
 }
 
 module.exports = { Graph, Node }
+
+// function DFS(p1, p2, seen=new Set([p1]), distance = 0) {
+//   if (p1 === p2) {
+//     pathDistances.push(distance);
+//     return true;
+//   }
+
+//   if (p1.adjacent.has(p2)){
+//     pathDistances.push(distance + 1);
+//     return true;
+//   }
+
+//   for (let neighbor of p1.adjacent) {
+//     if (!seen.has(neighbor)) {
+
+//       seen.add(neighbor);
+//       if (DFS(neighbor, p2, seen, distance = distance + 1)) {
+//         return true;
+//       }
+//     }
+//   }
+//   return false;
+// }
+
+// DFS(start, end);

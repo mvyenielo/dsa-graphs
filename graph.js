@@ -100,17 +100,14 @@ class Graph {
   }
 
   /** find the distance of the shortest path from the start node to the end node */
-  //       A
-  //   B  ->   D
-
   distanceOfShortestPath(start, end) {
 
-    if(isNaN(getDistance(start))) return;
-
-    function getDistance(start){
-      let result = depthFirstSearch(start);
+    const getDistance = (start) => {
+      let result = this.depthFirstSearch(start);
       return (result.indexOf(end.value) === -1) ? NaN : result.indexOf(end.value);
     }
+
+    if(isNaN(getDistance(start))) return;
 
     let current = start;
     let distance = 0;
@@ -138,49 +135,5 @@ class Graph {
   }
 }
 
-function depthFirstSearch(start) {
-  let toVisitStack = [start];
-  let seen = new Set([start]);
-
-  let values = [];
-  while (toVisitStack.length > 0){
-    const current = toVisitStack.pop();
-
-    values.push(current.value);
-
-    for (let neighbor of current.adjacent){
-      if (!seen.has(neighbor)){
-        toVisitStack.push(neighbor);
-        seen.add(neighbor);
-      }
-    }
-  }
-  return values;
-}
-
 module.exports = { Graph, Node }
 
-// function DFS(p1, p2, seen=new Set([p1]), distance = 0) {
-//   if (p1 === p2) {
-//     pathDistances.push(distance);
-//     return true;
-//   }
-
-//   if (p1.adjacent.has(p2)){
-//     pathDistances.push(distance + 1);
-//     return true;
-//   }
-
-//   for (let neighbor of p1.adjacent) {
-//     if (!seen.has(neighbor)) {
-
-//       seen.add(neighbor);
-//       if (DFS(neighbor, p2, seen, distance = distance + 1)) {
-//         return true;
-//       }
-//     }
-//   }
-//   return false;
-// }
-
-// DFS(start, end);

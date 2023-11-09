@@ -105,25 +105,57 @@ class Graph {
 
   distanceOfShortestPath(start, end) {
 
-    let pathDistances = [];
-    let toVisitQueue = [start];
-    let seen = new Set([start]);
+    if(isNaN(getDistance(start))) return;
 
-    while(toVisitQueue.length > 0) {
-      const current = toVisitQueue.shift();
-
-      for (let neighbor of current.adjacent) {
-        if(!seen.has(neighbor)) {
-          toVisitQueue.push(neighbor);
-          seen.add(neighbor);
-        }
-      }
+    function getDistance(start){
+      let result = depthFirstSearch(start);
+      return (result.indexOf(end.value) === -1) ? NaN : result.indexOf(end.value);
     }
 
+    let current = start;
+    let distance = 0;
+    while(true) {
+      if (current === end) break;
 
-    console.log("path distances are: ", pathDistances);
-    return Math.min(...pathDistances);
+      let shortChild;
+      let minDistance = getDistance(current);
+
+      for (let child of current.adjacent) {
+        if (!shortChild) shortChild = child;
+
+        let currentDistance = getDistance(child);
+        if (currentDistance < minDistance){
+          shortChild = child;
+          minDistance = currentDistance;
+        }
+      }
+
+      current = shortChild;
+      distance++;
+    }
+
+    return distance;
   }
+}
+
+function depthFirstSearch(start) {
+  let toVisitStack = [start];
+  let seen = new Set([start]);
+
+  let values = [];
+  while (toVisitStack.length > 0){
+    const current = toVisitStack.pop();
+
+    values.push(current.value);
+
+    for (let neighbor of current.adjacent){
+      if (!seen.has(neighbor)){
+        toVisitStack.push(neighbor);
+        seen.add(neighbor);
+      }
+    }
+  }
+  return values;
 }
 
 module.exports = { Graph, Node }
